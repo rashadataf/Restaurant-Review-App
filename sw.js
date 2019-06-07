@@ -28,3 +28,37 @@ const assets = [
     './img/9.jpg',
     './img/10.jpg',
   ];
+
+  self.addEventListener('fetch', (event) => {
+    event.respondWith(
+      caches.match(event.request)
+        .then((response) => {
+          return response || fetch(event.request);
+        })
+    );
+  });
+
+  self.addEventListener('install', function(event) {
+    event.waitUntil(
+      caches.open(staticCacheName)
+        .then( (cache) => {
+          return cache.addAll(assets);
+        })
+    );
+  });
+
+  self.addEventListener('activate', function (event) {
+    event.waitUntil(
+        caches.keys()
+          .then( (cacheNames) => {
+            return Promise.all(
+                cacheNames.filter(function (cacheName) {
+                    return cacheName.startsWith('review-') &&
+                        cacheName != staticCacheName;
+                }).map(function (cacheName) {
+                    return caches.delete(cacheName);
+                })
+            );
+          })
+    );
+});

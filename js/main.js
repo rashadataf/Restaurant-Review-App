@@ -85,8 +85,11 @@ initMap = () => {
       'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
     id: 'mapbox.streets'
   }).addTo(newMap);
-
+  document.querySelectorAll('.leaflet-control-attribution a').forEach(element => {
+    element.setAttribute('tabIndex',-1);
+  });
   updateRestaurants();
+  document.getElementById('map').tabIndex = '-1';
 }
 /* window.initMap = () => {
   let loc = {
